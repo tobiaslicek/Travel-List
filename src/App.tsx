@@ -1,8 +1,13 @@
 import './App.css';
 
+const initialItems = [
+  { id: 1, description: 'Passports', quantity: 2, packed: false },
+  { id: 2, description: 'Socks', quantity: 12, packed: false },
+];
+
 const App = () => {
   return (
-    <div className='app'>
+    <div className="app">
       <Logo />
       <Form />
       <PackingList />
@@ -24,7 +29,28 @@ const Form = () => {
 };
 
 const PackingList = () => {
-  return <div className="list">LIST</div>;
+  return (
+    <div className="list">
+      <ul>
+        {initialItems.map((item) => (
+          <Item item={item} />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const Item = ({ item }) => {
+  return (
+    <div>
+      <li>
+        <span style={item.packed ? { textDecoration: 'line-through'} : {}}>
+          {item.quantity} {item.description}
+        </span>
+        <button>❌</button>
+      </li>
+    </div>
+  );
 };
 
 const Stats = () => {
