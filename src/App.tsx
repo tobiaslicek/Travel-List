@@ -1,13 +1,13 @@
 import './App.css';
 
-type PackingItem = {
+type ItemType = {
   id: number;
   description: string;
   quantity: number;
   packed: boolean;
 };
 
-const initialItems: PackingItem[] = [
+const initialItems: ItemType[] = [
   { id: 1, description: 'Passports', quantity: 2, packed: false },
   { id: 2, description: 'Socks', quantity: 12, packed: false },
 ];
@@ -17,29 +17,29 @@ const App = () => {
     <div className="app">
       <Logo />
       <Form />
-      <PackingList items={initialItems} />
-      <Stats items={initialItems} />
+      <PackingList />
+      <Stats />
     </div>
   );
 };
 
-const Logo = () => <h1>🏝️ Far Away 🧳</h1>;
-
-const Form = () => (
-  <div className="add-form">
-    <h3>What do you need for your trip</h3>
-  </div>
-);
-
-type PackingListProps = {
-  items: PackingItem[];
+const Logo = () => {
+  return <h1>🏝️ Far Away 🧳</h1>;
 };
 
-const PackingList = ({ items }: PackingListProps) => {
+const Form = () => {
+  return (
+    <div className="add-form">
+      <h3>What do you need for your trip</h3>
+    </div>
+  );
+};
+
+const PackingList = () => {
   return (
     <div className="list">
       <ul>
-        {items.map((item) => (
+        {initialItems.map((item) => (
           <Item key={item.id} item={item} />
         ))}
       </ul>
@@ -48,7 +48,7 @@ const PackingList = ({ items }: PackingListProps) => {
 };
 
 type ItemProps = {
-  item: PackingItem;
+  item: ItemType;
 };
 
 const Item = ({ item }: ItemProps) => {
@@ -62,21 +62,10 @@ const Item = ({ item }: ItemProps) => {
   );
 };
 
-type StatsProps = {
-  items: PackingItem[];
-};
-
-const Stats = ({ items }: StatsProps) => {
-  const numItems = items.length;
-  const numPacked = items.filter((i) => i.packed).length;
-  const percent = numItems === 0 ? 0 : Math.round((numPacked / numItems) * 100);
-
+const Stats = () => {
   return (
     <footer className="stats">
-      <em>
-        🧳 You have {numItems} items on your list, and you already packed{' '}
-        {numPacked} ({percent}%)
-      </em>
+      <em>🧳 You have X items on your list, and you already packed X (X%)</em>
     </footer>
   );
 };
