@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import './App.css';
 
 type ItemType = {
@@ -14,11 +14,17 @@ const initialItems: ItemType[] = [
 ];
 
 const App = () => {
+  const [items, setItems] = useState<ItemType[]>(initialItems);
+
+  const handleAddItems = (item: ItemType) => {
+    setItems((items) => [...items, item]);
+  };
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -28,51 +34,69 @@ const Logo = () => {
   return <h1>🏝️ Far Away 🧳</h1>;
 };
 
-const Form = () => {
-  const [description, setDescription] = useState('');
-  const [quantity, setQuantity] = useState(1);
+type FormProps = {
+  onAddItems: (item: ItemType) => void;
+};
 
-  const handleSubmit = (e) => {
+const Form = ({ onAddItems }: FormProps) => {
+  const [description, setDescription] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!description) return;
 
-    const newItem = { description, quantity, packed: false, id: Date.now() };
-    console.log(newItem);
+    const newItem: ItemType = {
+      id: Date.now(),
+      description,
+      quantity,
+      packed: false,
+    };
+
+    onAddItems(newItem);
 
     setDescription('');
     setQuantity(1);
   };
 
+  const handleQuantityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setQuantity(Number(e.target.value));
+  };
+
   return (
     <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your trip</h3>
-      {/* <select>
-        <option value={1}>1</option>
-        <option value={2}>2</option>
-        <option value={3}>3</option>
-      </select> */}
-      <select value={quantity} onChange={(e) => setQuantity(+e.target.value)}>
+
+      <select value={quantity} onChange={handleQuantityChange}>
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-          <option value={num} key={num}></option>
+          <option value={num} key={num}>
+            {num}
+          </option>
         ))}
       </select>
+
       <input
         type="text"
         placeholder="Item..."
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
+
       <button>ADD</button>
     </form>
   );
 };
 
-const PackingList = () => {
+type PackingListProps = {
+  items: ItemType[];
+};
+
+const PackingList = ({ items }: PackingListProps) => {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item key={item.id} item={item} />
         ))}
       </ul>
